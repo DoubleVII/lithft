@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools >= 61.0"]
+requires = ["setuptools >= 61.0", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -70,4 +70,5 @@ Issues = "https://github.com/DoubleVII/lithft/issues"
 [tool.setuptools]
 py-modules = ["lithft"]
 
-    
+[tool.setuptools_scm]
+write_to = "lithft/_version.py"
