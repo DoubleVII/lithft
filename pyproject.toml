@@ -1,0 +1,73 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lithft"
+dynamic = ["version"]
+
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.37.2",
+    "accelerate",
+    "sentencepiece",
+    "jsonargparse",
+    "pandas",
+    "pyarrow",
+    "docstring_parser",
+    "deepspeed>=0.9.3",
+    "torchmetrics",
+    "lightning",
+]
+
+requires-python = ">= 3.9"
+
+authors = [
+  {name = "Sen Yang", email = "yangsen@smail.nju.edu.cn"},
+]
+maintainers = [
+  {name = "Sen Yang", email = "yangsen@smail.nju.edu.cn"},
+]
+
+description = "Pretrain, finetune any LLMs from huggingface on your own data."
+
+readme = "README.md"
+
+license = {file = "LICENSE"}
+
+keywords = ["deep-learning", "pytorch", "large language model", "LLM", "machine translation"]
+
+
+classifiers = [
+  # How mature is this project? Common values are
+  #   3 - Alpha
+  #   4 - Beta
+  #   5 - Production/Stable
+  "Development Status :: 3 - Alpha",
+
+  # Indicate who your project is intended for
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+
+  # Pick your license as you wish (see also "license" above)
+  "License :: OSI Approved :: MIT License",
+
+  # Specify the Python versions you support here.
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+]
+
+
+[project.urls]
+Homepage = "https://github.com/DoubleVII/lithft"
+Documentation = "https://github.com/DoubleVII/lithft"
+Repository = "https://github.com/DoubleVII/lithft"
+Issues = "https://github.com/DoubleVII/lithft/issues"
+
+
+[tool.setuptools]
+py-modules = ["lithft"]
+
+    
