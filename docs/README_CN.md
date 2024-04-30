@@ -10,11 +10,11 @@
 
 LitHFT是基于[LitGPT](https://github.com/Lightning-AI/litgpt)开发的工具，用于对[Huggingface](https://huggingface.co/)中的语言模型(LLMs)进行预训练和微调。相比之下，LitGPT专为某些类型的LLMs设计，支持20多种常用的LLMs。然而，它不适用于Huggingface中的其他类型模型，例如[Qwen](https://huggingface.co/Qwen)。LitHFT适用于原生Huggingface模型，无需进行检查点转换，但代价是训练优化较少。
 
-|对比|LitHFT|LitGPT|
-|----|----|----|
-|LLMs|任何|20+|
-|优化|Deepspeed|FSDP|
-|数据加载器|来自[TinyLLama](https://github.com/jzhang38/TinyLlama)的打包数据|litdata|
+| 对比        |LitHFT|LitGPT|
+|-----------|----|----|
+| LLMs      |任意|20+|
+| Optimization |Deepspeed|FSDP|
+| Dataloader |来自[TinyLLama](https://github.com/jzhang38/TinyLlama)的打包数据|litdata|
 
 ## 安装LitHFT
 
@@ -28,7 +28,7 @@ pip install -e .
 
 该项目仅在Qwen和Mistral模型上测试过。
 
-|模型|设备|吞吐量 / s / 设备|
+|模型|设备|吞吐量 / s / device|
 |----|----|----|
 |Qwen1.5-1.8B|A800-40G|24.5k tokens|
 |Mistral-7B|A100-80G|3.5k tokens|
@@ -124,7 +124,7 @@ launch/pretrain.py \
 
 ### 转换为Huggingface格式
 
-和[微调部分](#convert-to-huggingface)一样。
+和[微调](#转换为Huggingface格式)部分一样。
 
 ### 继续训练
 
