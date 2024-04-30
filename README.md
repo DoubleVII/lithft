@@ -128,7 +128,7 @@ Same as the [finetuning section](#convert-to-huggingface).
 
 ### Continue training
 
-Continued training can be performed by loading a pre-trained model, specifying the model directory by `initial_checkpoint_dir` flag:
+Continue training can be performed by loading a pre-trained model, specifying the model directory by `initial_checkpoint_dir` flag:
 
 
 ```bash
