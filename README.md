@@ -31,6 +31,12 @@ pip install -e .
 ## Warning
 This project has only been tested on Qwen and Mistral.
 
+|Model|Device|Throughput / s / device|
+|----|----|----|
+|Qwen1.5-1.8B|A800-40G|24.5k tokens|
+|Mistral-7B|A100-80G|3.5k tokens|
+
+
 # Quick start
 
 ## Finetune
