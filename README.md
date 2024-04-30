@@ -5,6 +5,7 @@
 
 **Pretrain, finetune any LLMs from huggingface on your own data.**
 
+| [English](https://github.com/DoubleVII/lithft) | [中文简体](docs/README_CN.md) |
 </div>
 
 ## What is LitHFT
