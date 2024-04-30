@@ -1,27 +1,22 @@
 <div align="center">
 
-
 # ⚡️🤗LitHFT
-
-**Pretrain, finetune any LLMs from huggingface on your own data.**
+**在你自己的数据上对任何来自huggingface的大型语言模型(LLMs)进行预训练和微调。**
 
 | [English](https://github.com/DoubleVII/lithft) | [中文简体](docs/README_CN.md) |
 </div>
 
-## What is LitHFT
+## 什么是LitHFT
 
-LitHFT is a tool developed based on [LitGPT](https://github.com/Lightning-AI/litgpt) for pre-training and fine-tuning Language Model (LLMs) from [Huggingface](https://huggingface.co/).
+LitHFT是基于[LitGPT](https://github.com/Lightning-AI/litgpt)开发的工具，用于对[Huggingface](https://huggingface.co/)中的语言模型(LLMs)进行预训练和微调。相比之下，LitGPT专为某些类型的LLMs设计，支持20多种常用的LLMs。然而，它不适用于Huggingface中的其他类型模型，例如[Qwen](https://huggingface.co/Qwen)。LitHFT适用于原生Huggingface模型，无需进行检查点转换，但代价是训练优化较少。
 
-In comparison, LitGPT is specifically designed for certain types of LLMs and supports over 20 commonly used LLMs. However, it is not applicable to other types of models in Huggingface, such as [Qwen](https://huggingface.co/Qwen). LitHFT is suitable for native Huggingface models without any need for checkpoint conversion, but the trade-off is less training optimization. 
+| 比较           |LitHFT|LitGPT|
+|--------------|----|----|
+| LLMs         |任意|20+|
+| Optimization |Deepspeed|FSDP|
+| Dataloader   |来自[TinyLLama](https://github.com/jzhang38/TinyLlama)的打包数据|litdata|
 
-|Comparison|LitHFT|LitGPT|
-|----|----|----|
-|LLMs|Any|20+|
-|Optimization|Deepspeed|FSDP|
-|Dataloader|packed data from [TinyLLama](https://github.com/jzhang38/TinyLlama)|litdata|
-
-
-## Install LitHFT
+## 安装LitHFT
 
 ```bash
 git clone https://github.com/DoubleVII/lithft.git
@@ -29,23 +24,24 @@ cd lithft
 pip install -e .
 ```
 
-## Warning
-This project has only been tested on Qwen and Mistral.
+## 警告
 
-|Model|Device|Throughput / s / device|
+该项目仅在Qwen和Mistral模型上测试过。
+
+|模型|设备|吞吐量 / s / device|
 |----|----|----|
 |Qwen1.5-1.8B|A800-40G|24.5k tokens|
 |Mistral-7B|A100-80G|3.5k tokens|
 
+# 快速开始
 
-# Quick start
+## 微调
 
-## Finetune
+### 数据
 
-### Data
-We use [`ParquetData`](./litgpt/data/parquet_sft_data.py) as an example here, which contains two columns: `prompt` and `response`. You can use any `Datamodule` supported by LitGPT.
+这里我们使用[`ParquetData`](./litgpt/data/parquet_sft_data.py)作为示例，包含两列：`prompt`和`response`。你可以使用LitGPT支持的任何`Datamodule`。
 
-### Launch training
+### 启动训练
 
 ```bash
 huggingface-cli download "Qwen/Qwen1.5-1.8B" --local-dir Qwen1.5-1.8B --local-dir-use-symlinks False
@@ -70,20 +66,23 @@ launch/finetune.py \
 --out_dir out
 ```
 
+### 转换为Huggingface格式
 
-### Convert to Huggingface
-The model's state dict is not changed during training, it is simply extracted:
+训练期间模型的状态字典不会改变，简单提取即可：
+
 ```bash
 python3 litgpt/scripts/convert_hf_fast.py out/final/lit_model.pth/checkpoint/mp_rank_00_model_states.pt Qwen1.5-1.8B-finetuned
 ```
-The saved model file is `Qwen1.5-1.8B-finetuned/pytorch_model.bin`.
-You may need to copy some metadata to `Qwen1.5-1.8B-finetuned` to load the model directly via `AutoModelForCausalLM`.
 
-## Pretrain
+保存的模型文件是`Qwen1.5-1.8B-finetuned/pytorch_model.bin`。
 
-### Data
-For pretraining, LitHFT uses dataloader from [TinyLLama](https://github.com/jzhang38/TinyLlama) (with some modifications). Use the following script to process all parquet files under `pretrain_data` into binary data. All parquet files should contain the column `text`.
+你可能需要复制一些元数据到`Qwen1.5-1.8B-finetuned`，以便通过`AutoModelForCausalLM`直接加载模型。
 
+## 预训练
+
+### 数据
+
+对于预训练，LitHFT使用来自[TinyLLama](https://github.com/jzhang38/TinyLlama)（经过一些修改）的数据加载器。使用以下脚本将`pretrain_data`下的所有parquet文件处理为二进制数据。所有parquet文件应包含列`text`。
 
 ```bash
 huggingface-cli download "Qwen/Qwen1.5-1.8B" --local-dir Qwen1.5-1.8B --local-dir-use-symlinks False
@@ -91,9 +90,9 @@ huggingface-cli download "Qwen/Qwen1.5-1.8B" --local-dir Qwen1.5-1.8B --local-di
 python scripts/prepare_packed_data.py --source_path pretrain_data --destination_path bin/pretrain_data --tokenizer_path Qwen1.5-1.8B --prefix data_part
 ```
 
-### Launch distributed training
+### 启动分布式训练
 
-For rank=0 use the following command to start, for the other nodes you should modify the value of `NODE_RANK`.
+对于`rank=0`的节点，使用以下命令启动，对于其他节点，你应该修改`NODE_RANK`的值。
 
 ```bash
 NODE_RANK=0
@@ -123,14 +122,13 @@ launch/pretrain.py \
 --out_dir out
 ```
 
-### Convert to Huggingface
+### 转换为Huggingface格式
 
-Same as the [finetuning section](#convert-to-huggingface).
+和[微调](#转换为Huggingface格式)部分一样。
 
-### Continue training
+### 继续训练
 
-Continue training can be performed by loading a pre-trained model, specifying the model directory by `initial_checkpoint_dir` flag:
-
+通过加载预训练的模型，并通过`initial_checkpoint_dir`标志指定模型目录来执行继续训练：
 
 ```bash
 NODE_RANK=0
@@ -160,8 +158,6 @@ launch/pretrain.py \
 --out_dir out
 ```
 
+## 许可证
 
-
-## License
-
-LitHFT is released under the [MIT](https://github.com/DoubleVII/lithft/blob/main/LICENSE) license. Additionally, this project comes with LitGPT’s [Apache 2.0](https://github.com/Lightning-AI/litgpt/blob/main/LICENSE) license.
+LitHFT采用[MIT](https://github.com/DoubleVII/lithft/blob/main/LICENSE)许可证发布。此外，此项目还附带LitGPT的[Apache 2.0](https://github.com/Lightning-AI/litgpt/blob/main/LICENSE)许可证。
